@@ -1,0 +1,28 @@
+---
+abstract: 'Worker Object Receiving Items From Q4M'
+author:
+  - 'Daisuke Maki C<< <daisuke@endeworks.jp> >>'
+build_requires:
+  ExtUtils::MakeMaker: 6.42
+configure_requires:
+  ExtUtils::MakeMaker: 6.42
+distribution_type: module
+generated_by: 'Module::Install version 1.00'
+license: perl
+meta-spec:
+  url: http://module-build.sourceforge.net/META-spec-v1.4.html
+  version: 1.4
+name: Queue-Q4M-Worker
+no_index:
+  directory:
+    - inc
+    - t
+    - xt
+requires:
+  DBI: 0
+  POSIX: 0
+  Parallel::Prefork: 0
+resources:
+  license: http://dev.perl.org/licenses/
+  repository: git://github.com/lestrrat/Queue-Q4M-Worker.git
+version: 0.00001
