@@ -29,7 +29,7 @@ no_index:
 provides:
   Queue::Q4M::Worker:
     file: lib/Queue/Q4M/Worker.pm
-    version: 0.02
+    version: 0.03
 requires:
   DBI: 0
   POSIX: 0
@@ -38,6 +38,6 @@ resources:
   bugtracker: https://github.com/lestrrat/Queue-Q4M-Worker/issues
   homepage: https://github.com/lestrrat/Queue-Q4M-Worker
   repository: git://github.com/lestrrat/Queue-Q4M-Worker.git
-version: 0.02
+version: 0.03
 x_contributors:
   - 'Daisuke Maki <lestrrat+github@gmail.com>'

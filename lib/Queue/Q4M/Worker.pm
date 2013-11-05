@@ -12,7 +12,7 @@ use Class::Accessor::Lite
     ) ]
 ;
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 my $guard;
 BEGIN {
@@ -86,7 +86,7 @@ sub work {
 # control over how this is done, please subclass).
 sub run_multi {
     my $self = shift;
-    my $pp = Paralle::Prefork->new({
+    my $pp = Parallel::Prefork->new({
         max_workers => $self->max_workers,
         trap_signals => {
             TERM => 'TERM',

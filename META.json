@@ -62,7 +62,7 @@
    "provides" : {
       "Queue::Q4M::Worker" : {
          "file" : "lib/Queue/Q4M/Worker.pm",
-         "version" : "0.02"
+         "version" : "0.03"
       }
    },
    "release_status" : "stable",
@@ -76,7 +76,7 @@
          "web" : "https://github.com/lestrrat/Queue-Q4M-Worker"
       }
    },
-   "version" : "0.02",
+   "version" : "0.03",
    "x_contributors" : [
       "Daisuke Maki <lestrrat+github@gmail.com>"
    ]
