@@ -6,13 +6,15 @@ use Class::Accessor::Lite
     rw => [ qw(
         dbh
         max_workers
+        min_requests_per_child
+        max_requests_per_child
         signal_received
         sql
         _work_once
     ) ]
 ;
 
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 
 my $guard;
 BEGIN {
@@ -33,6 +35,8 @@ sub new {
 
     bless {
         max_workers => 0,
+        max_requests_per_child  => 10_000,
+        min_requests_per_child  => 0,
         _work_once => delete $args{work_once},
         %args
     }, $class;
@@ -71,7 +75,14 @@ sub work_once {
     }
 }
 
-sub should_loop { ! $_[0]->signal_received }
+# XXX can we  process more jobs? 
+sub should_process_more { $_[0]->{stop_at} > $_[0]->{processed} }
+
+sub should_loop { 
+    $_[0]->should_process_more &&
+    ! $_[0]->signal_received
+}
+
 sub work {
     my $self = shift;
 
@@ -86,12 +97,12 @@ sub work {
 # control over how this is done, please subclass).
 sub run_multi {
     my $self = shift;
+    require Parallel::Prefork;
     my $pp = Parallel::Prefork->new({
         max_workers => $self->max_workers,
         trap_signals => {
             TERM => 'TERM',
             HUP  => 'TERM',
-            INT  => 'TERM',
         }
     });
 
@@ -99,11 +110,28 @@ sub run_multi {
         $pp->start(sub { $self->run_single });
     }
 
-    $pp->wait_all_chlidren()
+    $pp->wait_all_children()
 }
 
 sub run_single {
     my $self = shift;
+
+    my $min_requests = $self->min_requests_per_child;
+    my $max_requests = $self->max_requests_per_child;
+
+    # WTF? min_requests can't be 0
+    if ($min_requests < 0) {
+        $min_requests = 0;
+    }
+
+    # WTF? max_requests must be > min_requests
+    # arbitrarily choose min + 5_000
+    if ($max_requests <= $min_requests) {
+        $max_requests = $min_requests + 5000;
+    }
+    my $stop_at = int(rand($max_requests));
+    $self->{stop_at} = $stop_at;
+
     my $dbh = $self->_get_dbh();
     my $sth;
     my $sigset = POSIX::SigSet->new( SIGINT, SIGQUIT, SIGTERM );
@@ -122,21 +150,23 @@ sub run_single {
 
     $install_sig->();
 
+    my ($stmt, @binds) = $self->_get_sql();
+    $sth = $dbh->prepare($stmt);
+
+    my $queue_end_sth = $dbh->prepare("SELECT queue_end()");
+
     my $default_sig = POSIX::SigAction->new('DEFAULT');
     while ( $self->should_loop ) {
-        my ($stmt, @binds) = $self->_get_sql();
-        $sth = $dbh->prepare( $stmt );
         my $rv = $sth->execute( @binds );
         if ( $rv == 0 ) { # nothing
             $sth->finish;
             next;
         }
 
-        while (
-            ! $self->signal_received &&
-            $self->should_loop &&
-            ( my $h = $sth->fetchrow_hashref )
-        ) {
+        if ( my $h = $sth->fetchrow_hashref ) {
+            $self->{processed}++;
+            $queue_end_sth->execute();
+
             # while the consumer is working, we need to reset the
             # signal handlers that we previously set
             my $gobj = $guard->($install_sig);
