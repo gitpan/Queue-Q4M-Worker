@@ -2,9 +2,11 @@ package Queue::Q4M::Worker;
 use strict;
 use DBI;
 use POSIX qw(:signal_h);
+use Time::HiRes ();
 use Class::Accessor::Lite
     rw => [ qw(
         dbh
+        delay
         max_workers
         min_requests_per_child
         max_requests_per_child
@@ -14,7 +16,7 @@ use Class::Accessor::Lite
     ) ]
 ;
 
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 
 my $guard;
 BEGIN {
@@ -176,6 +178,10 @@ sub run_single {
 
             $self->work_once( $h );
         }
+        if (my $delay = $self->delay) {
+            Time::HiRes::sleep($delay);
+        }
+            
     }
     POSIX::sigaction( SIGINT,  $default_sig );
     POSIX::sigaction( SIGQUIT, $default_sig );
