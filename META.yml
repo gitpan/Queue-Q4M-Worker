@@ -10,7 +10,7 @@ configure_requires:
   CPAN::Meta::Prereqs: 0
   Module::Build: 0.38
 dynamic_config: 0
-generated_by: 'Minilla/v0.8.3, CPAN::Meta::Converter version 2.120921'
+generated_by: 'Minilla/v0.8.4, CPAN::Meta::Converter version 2.120921'
 license: perl
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
@@ -29,7 +29,7 @@ no_index:
 provides:
   Queue::Q4M::Worker:
     file: lib/Queue/Q4M/Worker.pm
-    version: 0.05
+    version: 0.06
 recommends:
   Scope::Guard: 0
 requires:
@@ -41,7 +41,7 @@ resources:
   bugtracker: https://github.com/lestrrat/Queue-Q4M-Worker/issues
   homepage: https://github.com/lestrrat/Queue-Q4M-Worker
   repository: git://github.com/lestrrat/Queue-Q4M-Worker.git
-version: 0.05
+version: 0.06
 x_contributors:
   - 'Neil Bowers <neil@bowers.com>'
   - 'Daisuke Maki <lestrrat+github@gmail.com>'

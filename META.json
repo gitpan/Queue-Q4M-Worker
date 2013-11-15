@@ -4,7 +4,7 @@
       "Daisuke Maki C<< <daisuke@endeworks.jp> >>"
    ],
    "dynamic_config" : 0,
-   "generated_by" : "Minilla/v0.8.3",
+   "generated_by" : "Minilla/v0.8.4",
    "license" : [
       "perl_5"
    ],
@@ -66,7 +66,7 @@
    "provides" : {
       "Queue::Q4M::Worker" : {
          "file" : "lib/Queue/Q4M/Worker.pm",
-         "version" : "0.05"
+         "version" : "0.06"
       }
    },
    "release_status" : "stable",
@@ -80,7 +80,7 @@
          "web" : "https://github.com/lestrrat/Queue-Q4M-Worker"
       }
    },
-   "version" : "0.05",
+   "version" : "0.06",
    "x_contributors" : [
       "Neil Bowers <neil@bowers.com>",
       "Daisuke Maki <lestrrat+github@gmail.com>"
